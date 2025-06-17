@@ -1,0 +1,23 @@
+default: &default
+  adapter: postgresql
+  encoding: UTF8
+  locale: en_US.UTF-8
+  username: postgres
+  password: admin
+  host: localhost
+  port: 5432
+  template: template0  # ¡Añade esta línea clave!
+
+development:
+  <<: *default
+  database: social_simulation_development
+
+test:
+  <<: *default
+  database: social_simulation_test
+
+production:
+  <<: *default
+  database: social_simulation_production
+  username: social_simulation
+  password: <%= ENV['SOCIAL_SIMULATION_DATABASE_PASSWORD'] %>
