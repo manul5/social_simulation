@@ -1,6 +1,13 @@
 <div class="container">
   <h1 class="my-4">Simulador de Propagación de Noticias</h1>
 
+  <!-- Mensaje de éxito -->
+  <% if flash[:notice] %>
+    <div class="alert alert-info text-center">
+      <%= flash[:notice] %>
+    </div>
+  <% end %>
+
   <!-- Estadísticas -->
   <div class="card mb-4">
     <div class="card-header">
@@ -70,6 +77,14 @@
     <%= link_to "Descargar Excel de la Simulación", download_excel_simulations_path(format: :xlsx), class: "btn btn-success" %>
   </div>
 
+  <!-- Botón para reiniciar base y generar nuevos datos -->
+  <div class="mb-4 text-end">
+    <%= button_to "Generar Nuevos Datos", reset_and_seed_simulations_path, 
+        method: :post, 
+        class: "btn btn-danger text-white",
+        data: { confirm: "¿Estás seguro? Esto borrará y recreará todos los usuarios y posts." } %>
+  </div>
+
   <!-- Formulario de Simulación CORREGIDO -->
   <div class="card">
     <div class="card-header">
@@ -100,7 +115,7 @@
         </div>
         <div class="form-group text-center mt-3">
           <%= submit_tag "Ejecutar Simulación", class: "btn btn-primary btn-lg me-3" %>
-          <%= link_to "Resetear Datos", reset_simulations_path, 
+          <%# link_to "Resetear Datos", reset_simulations_path, 
                      method: :delete,
                      class: "btn btn-danger btn-lg",
                      data: { turbo_method: :delete, 

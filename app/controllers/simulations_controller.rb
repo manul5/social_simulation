@@ -52,7 +52,7 @@ class SimulationsController < ApplicationController
       )
     end
 
-    redirect_to simulations_path, notice: "Simulación completada. Shares creados: #{Share.count}"
+    redirect_to simulations_path, notice: "Simulación completada."
   rescue => e
     redirect_to simulations_path, alert: "Error en simulación: #{e.message}"
   end
@@ -60,6 +60,24 @@ class SimulationsController < ApplicationController
   def reset
     Share.delete_all
     redirect_to simulations_path, notice: "Datos de simulación reseteados"
+  end
+
+  def reset_and_seed
+    Share.delete_all
+    Post.delete_all
+    User.delete_all
+
+    load Rails.root.join("db/seeds.rb")
+
+    # Calcula estadísticas después de ejecutar el seed
+    users_count = User.count
+    avg_bias = User.average(:bias).round(2)
+    posts_count = Post.count
+    fake_count = Post.where(is_fake: true).count
+
+    flash[:notice] = "¡Datos creados! Usuarios: #{users_count} (Sesgo promedio: #{avg_bias}) | Posts: #{posts_count} (#{fake_count} fake news)"
+
+    redirect_to simulations_path
   end
 
   def download_excel

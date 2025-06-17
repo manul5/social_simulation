@@ -1,44 +1,48 @@
 require 'faker'
 
+# Método Congruencial Lineal para generar números pseudoaleatorios normalizados en [0,1)
+def mcl(seed, cantidad)
+  a = 1664525
+  b = 1013904223
+  m = 2**32
+  x = seed
+  Array.new(cantidad) do
+    x = (a * x + b) % m
+    x.to_f / m
+  end
+end
+
 # Limpiar toda la data existente
 puts "🧹 Limpiando base de datos..."
 Share.delete_all
 Post.delete_all
 User.delete_all
 
-# Crear usuarios con distribución de sesgos más realista
-puts "👥 Creando 100 usuarios..."
-users = 100.times.map do
-  # Distribución más realista de sesgos (menos extremos)
-  bias = if rand < 0.2
-           rand(-1.0..-0.5)  # 20% sesgo negativo fuerte
-  elsif rand < 0.4
-           rand(-0.5..0)     # 20% sesgo negativo moderado
-  elsif rand < 0.6
-           rand(0..0.5)      # 20% sesgo positivo moderado
-  elsif rand < 0.8
-           rand(0.5..1.0)    # 20% sesgo positivo fuerte
-  else
-           rand(-0.3..0.3)   # 20% neutrales
-  end.round(2)
+# Generar 1000 valores de bias en [-1, 1] usando Metodo Congruencial Lineal
+puts "👥 Creando 1000 usuarios..."
+biases = mcl(Time.now.to_i, 1000).map { |n| (n * 2 - 1).round(2) } # Normaliza a [-1,1]
 
+users = 1000.times.map do |i|
   User.create!(
     name: Faker::Name.unique.name,
-    bias: bias
+    bias: biases[i]
   )
 end
 
-# Crear posts con distribución más balanceada
-puts "📝 Creando 50 publicaciones..."
-50.times do |i|
-  is_fake = i.even?  # Alternar entre true/false para mejor distribución
+# Crear 200 posts con is_fake aleatorio
+puts "📝 Creando 200 publicaciones..."
+# Genera 200 números pseudoaleatorios para is_fake
+is_fake_values = mcl(Time.now.to_i + 1, 200) # Usa una semilla distinta a la de bias
+
+200.times do |i|
+  is_fake = is_fake_values[i] >= 0.5
   creator = users.sample
 
   Post.create!(
     content: Faker::Lorem.unique.sentence(word_count: 8),
     is_fake: is_fake,
-    user: creator,  # Asociación directa
-    created_at: rand(1..30).days.ago  # Variedad temporal
+    user: creator,
+    created_at: rand(1..30).days.ago
   )
 end
 

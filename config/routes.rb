@@ -4,6 +4,7 @@ Rails.application.routes.draw do
       post :run
       get :reset
       get :download_excel
+      post :reset_and_seed
     end
   end
 end
