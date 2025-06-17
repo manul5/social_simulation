@@ -61,4 +61,20 @@ class SimulationsController < ApplicationController
     Share.delete_all
     redirect_to simulations_path, notice: "Datos de simulación reseteados"
   end
+
+  def download_excel
+    @top_users = User.joins(shares: :post)
+                     .select('users.id, users.name, users.bias,
+                              COUNT(shares.id) as shares_count,
+                              SUM(CASE WHEN posts.is_fake = false THEN 1 ELSE 0 END) as real_shares,
+                              SUM(CASE WHEN posts.is_fake = true THEN 1 ELSE 0 END) as fake_shares')
+                     .group("users.id, users.name, users.bias")
+                     .order("shares_count DESC")
+
+    respond_to do |format|
+      format.xlsx {
+        response.headers["Content-Disposition"] = 'attachment; filename="tabla_compartidores.xlsx"'
+      }
+    end
+  end
 end

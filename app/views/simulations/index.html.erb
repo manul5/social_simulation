@@ -65,24 +65,36 @@
     </div>
   </div>
 
+  <!-- Botón para descargar Excel -->
+  <div class="mb-4 text-end">
+    <%= link_to "Descargar Excel de la Simulación", download_excel_simulations_path(format: :xlsx), class: "btn btn-success" %>
+  </div>
+
   <!-- Formulario de Simulación CORREGIDO -->
   <div class="card">
     <div class="card-header">
       <h2>Nueva Simulación</h2>
     </div>
     <div class="card-body">
+      <style>
+        .sim-label {
+          min-height: 30px; /* Ajusta este valor según lo que necesites */
+          display: flex;
+          align-items: flex-end;
+        }
+      </style>
       <%= form_tag run_simulations_path, method: :post, data: { turbo: false } do %>
         <div class="form-group row">
-          <div class="col-md-4">
-            <%= label_tag :users_count, "Número de Usuarios (10-1000)", class: "col-form-label" %>
+          <div class="col-md-4 mb-3">
+            <%= label_tag :users_count, "Número de Usuarios (10-1000)", class: "col-form-label sim-label" %>
             <%= number_field_tag :users_count, 100, min: 10, max: 1000, class: "form-control" %>
           </div>
-          <div class="col-md-4">
-            <%= label_tag :posts_count, "Número de Publicaciones (5-200)", class: "col-form-label" %>
+          <div class="col-md-4 mb-3">
+            <%= label_tag :posts_count, "Número de Publicaciones (5-200)", class: "col-form-label sim-label" %>
             <%= number_field_tag :posts_count, 50, min: 5, max: 200, class: "form-control" %>
           </div>
-          <div class="col-md-4">
-            <%= label_tag :steps, "Pasos de Simulación (1-30)", class: "col-form-label" %>
+          <div class="col-md-4 mb-3">
+            <%= label_tag :steps, "Pasos para la Simulación (1-30)", class: "col-form-label sim-label" %>
             <%= number_field_tag :steps, 10, min: 1, max: 30, class: "form-control" %>
           </div>
         </div>

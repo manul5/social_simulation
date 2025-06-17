@@ -1,0 +1,14 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: "tabla_compartidores") do |sheet|
+  sheet.add_row ["Usuario", "Sesgo", "Total", "Reales", "Falsas", "Ratio"]
+  @top_users.each do |user|
+    sheet.add_row [
+      user.name,
+      user.bias.round(2),
+      user.shares_count,
+      user.real_shares,
+      user.fake_shares,
+      (user.real_shares.to_f / [user.fake_shares, 1].max).round(2)
+    ]
+  end
+end

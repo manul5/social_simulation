@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     collection do
       post :run
       get :reset
+      get :download_excel
     end
   end
 end
