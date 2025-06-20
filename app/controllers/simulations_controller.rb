@@ -63,23 +63,25 @@ class SimulationsController < ApplicationController
   end
 
   def reset_and_seed
-    Share.delete_all
-    Post.delete_all
-    User.delete_all
+  Share.delete_all
+  Post.delete_all
+  User.delete_all
 
-    load Rails.root.join("db/seeds.rb")
+  load Rails.root.join("db/seeds.rb")
 
-    # Calcula estadísticas después de ejecutar el seed
-    users_count = User.count
-    avg_bias = User.average(:bias).round(2)
-    posts_count = Post.count
-    fake_count = Post.where(is_fake: true).count
+  chi2 = $chi2_results
+  chi2_critical_biases = 16.92
+  chi2_critical_is_fake = 3.84
 
-    flash[:notice] = "¡Datos creados! Usuarios: #{users_count} (Sesgo promedio: #{avg_bias}) | Posts: #{posts_count} (#{fake_count} fake news)"
+  flash[:notice] = "¡Datos creados! Usuarios: #{User.count} (Sesgo promedio: #{User.average(:bias).round(2)}) | Posts: #{Post.count} (#{Post.where(is_fake: true).count} fake news)"
 
-    redirect_to simulations_path
+  flash[:chi2] = "Chi² sesgos: observado=#{chi2[:biases][:chi2]}, tabla=#{chi2_critical_biases}, α=0.05. " \
+                 "Resultado: #{chi2[:biases][:chi2] > chi2_critical_biases ? 'Se rechaza H₀' : 'No se rechaza H₀'}<br>" \
+                 "Chi² posteos falsos: observado=#{chi2[:is_fake][:chi2]}, tabla=#{chi2_critical_is_fake}, α=0.05. " \
+                 "Resultado: #{chi2[:is_fake][:chi2] > chi2_critical_is_fake ? 'Se rechaza H₀' : 'No se rechaza H₀'}"
+
+  redirect_to simulations_path
   end
-
   def download_excel
     @top_users = User.joins(shares: :post)
                      .select('users.id, users.name, users.bias,

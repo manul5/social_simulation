@@ -1,11 +1,16 @@
 <div class="container">
   <h1 class="my-4">Simulador de Propagación de Noticias</h1>
 
-  <!-- Mensaje de éxito -->
   <% if flash[:notice] %>
-    <div class="alert alert-info text-center">
-      <%= flash[:notice] %>
-    </div>
+  <div class="alert alert-info text-center">
+    <%= flash[:notice] %>
+  </div>
+  <% end %>
+
+  <% if flash[:chi2] %>
+  <div class="alert alert-info text-center">
+    <%= flash[:chi2].html_safe %>
+  </div>
   <% end %>
 
   <!-- Estadísticas -->
