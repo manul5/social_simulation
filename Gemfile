@@ -1,5 +1,7 @@
 source "https://rubygems.org"
 
+
+gem "thruster", require: false  # El `require: false` evita carga automática si no es necesaria
 gem "rails", "~> 8.0.2"
 gem "propshaft"
 gem "sqlite3", ">= 2.1"
