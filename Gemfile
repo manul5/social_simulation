@@ -1,6 +1,8 @@
 source "https://rubygems.org"
 
 
+# En tu Gemfile (grupo principal, no en development/test):
+gem "puma", "~> 6.4"  # Versión estable
 gem "thruster", require: false  # El `require: false` evita carga automática si no es necesaria
 gem "rails", "~> 8.0.2"
 gem "propshaft"
