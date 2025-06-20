@@ -6,7 +6,6 @@ end
 
 def chi_squared_biases(biases, bins = 10)
   # Discretiza biases en bins
-  bin_edges = (-1..1).step(2.0 / bins).to_a
   counts = Array.new(bins, 0)
   biases.each do |b|
     idx = [ [ ((b + 1) / 2 * bins).floor, bins - 1 ].min, 0 ].max

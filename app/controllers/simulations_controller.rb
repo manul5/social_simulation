@@ -20,12 +20,12 @@ class SimulationsController < ApplicationController
                      .limit(10)
 
     # Datos de depuración (solo si existen los modelos)
-    @debug_info = {}
-    if defined?(SimulationLog)
-      @debug_info[:last_simulation] = SimulationLog.last
-    end
-    @debug_info[:shares_sample] = Share.last(5)
-    @debug_info[:users_sample] = User.last(5)
+    # @debug_info = {}
+    # if defined?(SimulationLog)
+    #   @debug_info[:last_simulation] = SimulationLog.last
+    # end
+    # @debug_info[:shares_sample] = Share.last(5)
+    # @debug_info[:users_sample] = User.last(5)
   end
 
   def run
@@ -76,9 +76,9 @@ class SimulationsController < ApplicationController
   flash[:notice] = "¡Datos creados! Usuarios: #{User.count} (Sesgo promedio: #{User.average(:bias).round(2)}) | Posts: #{Post.count} (#{Post.where(is_fake: true).count} fake news)"
 
   flash[:chi2] = "Chi² sesgos: observado=#{chi2[:biases][:chi2]}, tabla=#{chi2_critical_biases}, α=0.05. " \
-                 "Resultado: #{chi2[:biases][:chi2] > chi2_critical_biases ? 'Se rechaza H₀' : 'No se rechaza H₀'}<br>" \
+                 "Resultado: #{chi2[:biases][:chi2] > chi2_critical_biases ? 'Se rechaza H₀' : 'Se acepta H₀'}<br>" \
                  "Chi² posteos falsos: observado=#{chi2[:is_fake][:chi2]}, tabla=#{chi2_critical_is_fake}, α=0.05. " \
-                 "Resultado: #{chi2[:is_fake][:chi2] > chi2_critical_is_fake ? 'Se rechaza H₀' : 'No se rechaza H₀'}"
+                 "Resultado: #{chi2[:is_fake][:chi2] > chi2_critical_is_fake ? 'Se rechaza H₀' : 'Se acepta H₀'}"
 
   redirect_to simulations_path
   end

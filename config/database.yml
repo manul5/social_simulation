@@ -1,23 +1,17 @@
 default: &default
-  adapter: postgresql
-  encoding: UTF8
-  locale: en_US.UTF-8
-  username: postgres
-  password: admin
-  host: localhost
-  port: 5432
-  template: template0  # ¡Añade esta línea clave!
+  adapter: sqlite3
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+  encoding: utf8
 
 development:
   <<: *default
-  database: social_simulation_development
+  database: db/development.sqlite3
 
 test:
   <<: *default
-  database: social_simulation_test
+  database: db/test.sqlite3
 
 production:
   <<: *default
-  database: social_simulation_production
-  username: social_simulation
-  password: <%= ENV['SOCIAL_SIMULATION_DATABASE_PASSWORD'] %>
+  database: db/production.sqlite3
