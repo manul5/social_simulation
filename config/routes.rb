@@ -7,4 +7,6 @@ Rails.application.routes.draw do
       post :reset_and_seed
     end
   end
+
+  root to: "simulations#index"
 end
