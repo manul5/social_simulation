@@ -13,6 +13,7 @@ test:
   database: db/test.sqlite3
 
 production:
-  <<: *default
-  database: /tmp/production.sqlite3  
-  pool: 1 
+  adapter: sqlite3
+  database: /tmp/production.sqlite3
+  pool: 1  
+  timeout: 5000
