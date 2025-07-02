@@ -28,9 +28,9 @@ class Simulation
 
   def should_share?(user, post)
     # Comparte solo si el post coincide con el sesgo, o si es neutral
-    return true if user.bias.abs <= 0.2
-    return true if user.bias > 0.2 && !post.is_fake
-    return true if user.bias < -0.2 && post.is_fake
+    return [true, false].sample if user.bias.abs <= 0.5
+    return true if user.bias > 0.5 && !post.is_fake
+    return true if user.bias < -0.5 && post.is_fake
     false
   end
 

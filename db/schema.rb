@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_20_184219) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_02_143602) do
   create_table "posts", force: :cascade do |t|
     t.string "content", null: false
     t.boolean "is_fake", null: false
@@ -34,6 +34,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_20_184219) do
     t.float "bias", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "classification"
   end
 
   add_foreign_key "posts", "users"

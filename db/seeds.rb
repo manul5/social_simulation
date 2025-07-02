@@ -1,19 +1,8 @@
 require 'faker'
+require 'csv'
 
 def chi_squared_test(observed, expected)
   observed.zip(expected).map { |o, e| (o - e)**2 / e.to_f }.sum
-end
-
-def chi_squared_biases(biases, bins = 10)
-  # Discretiza biases en bins
-  counts = Array.new(bins, 0)
-  biases.each do |b|
-    idx = [ [ ((b + 1) / 2 * bins).floor, bins - 1 ].min, 0 ].max
-    counts[idx] += 1
-  end
-  expected = [ biases.size / bins.to_f ] * bins
-  chi2 = chi_squared_test(counts, expected)
-  { chi2: chi2.round(2), observed: counts, expected: expected.map(&:round) }
 end
 
 def chi_squared_is_fake(is_fake_values)
@@ -41,20 +30,38 @@ Share.delete_all
 Post.delete_all
 User.delete_all
 
-# Generar 1000 valores de bias en [-1, 1] usando Metodo Congruencial Lineal
-puts "👥 Creando 1000 usuarios..."
-biases = mcl(Time.now.to_i, 1000).map { |n| (n * 2 - 1).round(2) } # Normaliza a [-1,1] se usa la formula (a + (b-a) * n)
-users = 1000.times.map do |i|
+# Leer biases desde el CSV y crear usuarios
+puts "👥 Creando 1000 usuarios desde CSV..."
+biases = []
+CSV.foreach(Rails.root.join('db', 'users_biases.csv'), headers: true) do |row|
+  biases << row['bias_score'].to_f
+end
+
+users = biases.map do |bias|
+  classification =
+    if bias >= 0.5 && bias <= 1
+      "Acertado"
+    elsif bias >= 0 && bias < 0.5
+      "Desconfiado"
+    elsif bias >= -0.5 && bias < 0
+      "Ingenuo"
+    elsif bias <= -0.5 && bias >= -1
+      "Confundido"
+    else
+      "Sin Clasificación"
+    end
+
   User.create!(
     name: Faker::Name.unique.name,
-    bias: biases[i]
+    bias: bias,
+    classification: classification
   )
 end
 
-# Crear 200 posts con is_fake aleatorio
+# Crear 200 posts with is_fake aleatorio
 puts "📝 Creando 200 publicaciones..."
 # Genera 200 números pseudoaleatorios para is_fake
-is_fake_values = mcl(Time.now.to_i + 1, 200) # Usa una semilla distinta a la de bias
+is_fake_values = mcl(Time.now.to_i, 200) 
 
 200.times do |i|
   is_fake = is_fake_values[i] >= 0.5
@@ -69,18 +76,16 @@ is_fake_values = mcl(Time.now.to_i + 1, 200) # Usa una semilla distinta a la de 
 end
 
 # Realiza las pruebas de chi-cuadrada
-chi2_biases = chi_squared_biases(biases)
+# chi2_biases = chi_squared_biases(biases)
 chi2_is_fake = chi_squared_is_fake(is_fake_values)
 
 # Guarda los resultados en variables globales para acceder desde el controlador
 $chi2_results = {
-  biases: chi2_biases,
+  # biases: chi2_biases,
   is_fake: chi2_is_fake
 }
 
-puts "Prueba chi-cuadrada biases: #{chi2_biases}"
 puts "Prueba chi-cuadrada is_fake: #{chi2_is_fake}"
 
 puts "✅ ¡Datos creados!"
-puts "Usuarios: #{User.count} (Sesgo promedio: #{User.average(:bias).round(2)})"
 puts "Posts: #{Post.count} (#{Post.where(is_fake: true).count} fake news)"

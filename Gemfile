@@ -13,6 +13,7 @@ gem "stimulus-rails"
 gem "jbuilder"
 gem "faker", "~> 3.2"
 gem "axlsx_rails"
+gem 'csv'
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "bootsnap", require: false
 
