@@ -11,7 +11,7 @@ gem "importmap-rails"
 gem "turbo-rails"
 gem "stimulus-rails"
 gem "jbuilder"
-gem "faker", "~> 3.2"
+gem "faker", "~> 3.5"
 gem "axlsx_rails"
 gem 'csv'
 gem "tzinfo-data", platforms: %i[ windows jruby ]
